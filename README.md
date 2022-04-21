@@ -12,8 +12,17 @@ Screenshot
 ## Download ##
 ### Gradle ###
 ```gradle
+// root build.gradle
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+// module build.gradle
 dependencies {
-    implementation 'com.henley.android:shadowlayout:1.0.2'
+    implementation 'com.github.licheedev:ShadowLayout:1.0.2.1'
 }
 ```
 
