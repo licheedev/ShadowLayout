@@ -28,4 +28,5 @@ dependencies {
     compileOnly "com.android.support:support-compat:$supportVersion"
 }
 
-apply from: '../gradle/bintray.gradle'
+//apply from: '../gradle/bintray.gradle'
+apply from: '../jitpack.gradle'

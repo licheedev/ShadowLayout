@@ -112,6 +112,9 @@ public class ShadowLayout extends ViewGroup {
         bgPaint.setColor(backgroundColor);
         bgPaint.setAntiAlias(true);
         bgPaint.setStyle(Paint.Style.FILL);
+        // fix xml preview
+        updatePaintShadow(shadowRadius, shadowDx, shadowDy, shadowColor);
+        // fix xml preview
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         setWillNotDraw(false);
         ViewCompat.setBackground(this, null);
@@ -823,7 +826,7 @@ public class ShadowLayout extends ViewGroup {
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);
             TypedArray a = c.obtainStyledAttributes(attrs, R.styleable.ShadowLayout_Layout);
-            gravity = a.getInt(R.styleable.ShadowLayout_Layout_layout_gravity, UNSPECIFIED_GRAVITY);
+            gravity = a.getInt(R.styleable.ShadowLayout_Layout_android_layout_gravity, UNSPECIFIED_GRAVITY);
             a.recycle();
         }
 
