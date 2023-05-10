@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
+
+    <com.henley.shadowlayout.ShadowLayout
+        android:id="@+id/shadow_view"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:foreground="?attr/selectableItemBackground"
+        app:cornerRadius="20dp"
+        app:shadowColor="#00ff00"
+        app:shadowMargin="40dp"
+        app:shadowRadius="30dp">
+        
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ff0000"
+            android:text="Google Developer Days Europe 2017 took place in Krakow, Poland. In this playlist, you can find all the recorded sessions from the event, across all tracks (Develop on Mobile, Mobile Web, Beyond Mobile, and Android)." />
+
+
+    </com.henley.shadowlayout.ShadowLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>
+

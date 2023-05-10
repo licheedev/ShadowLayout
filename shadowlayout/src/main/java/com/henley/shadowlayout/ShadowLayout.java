@@ -21,7 +21,6 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -70,11 +69,12 @@ public class ShadowLayout extends ViewGroup {
 
     public ShadowLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ShadowLayout, defStyleAttr, 0);
-        shadowColor = a.getColor(R.styleable.ShadowLayout_shadowColor
-                , ContextCompat.getColor(context, R.color.shadow_view_default_shadow_color));
-        foregroundColor = a.getColor(R.styleable.ShadowLayout_foregroundColor
-                , ContextCompat.getColor(context, R.color.shadow_view_foreground_color_dark));
+        TypedArray a =
+            getContext().obtainStyledAttributes(attrs, R.styleable.ShadowLayout, defStyleAttr, 0);
+        shadowColor = a.getColor(R.styleable.ShadowLayout_shadowColor,
+            ContextCompat.getColor(context, R.color.shadow_view_default_shadow_color));
+        foregroundColor = a.getColor(R.styleable.ShadowLayout_foregroundColor,
+            ContextCompat.getColor(context, R.color.shadow_view_foreground_color_dark));
         backgroundColor = a.getColor(R.styleable.ShadowLayout_backgroundColor, Color.WHITE);
         shadowDx = a.getFloat(R.styleable.ShadowLayout_shadowDx, 0f);
         shadowDy = a.getFloat(R.styleable.ShadowLayout_shadowDy, 1f);
@@ -83,30 +83,40 @@ public class ShadowLayout extends ViewGroup {
         if (drawable != null) {
             setForeground(drawable);
         }
-        int shadowMargin = a.getDimensionPixelSize(R.styleable.ShadowLayout_shadowMargin, SIZE_UNSET);
+        int shadowMargin =
+            a.getDimensionPixelSize(R.styleable.ShadowLayout_shadowMargin, SIZE_UNSET);
         if (shadowMargin >= 0) {
             shadowMarginTop = shadowMargin;
             shadowMarginLeft = shadowMargin;
             shadowMarginRight = shadowMargin;
             shadowMarginBottom = shadowMargin;
         } else {
-            shadowMarginTop = a.getDimensionPixelSize(R.styleable.ShadowLayout_shadowMarginTop, SIZE_DEFAULT);
-            shadowMarginLeft = a.getDimensionPixelSize(R.styleable.ShadowLayout_shadowMarginLeft, SIZE_DEFAULT);
-            shadowMarginRight = a.getDimensionPixelSize(R.styleable.ShadowLayout_shadowMarginRight, SIZE_DEFAULT);
-            shadowMarginBottom = a.getDimensionPixelSize(R.styleable.ShadowLayout_shadowMarginBottom, SIZE_DEFAULT);
+            shadowMarginTop =
+                a.getDimensionPixelSize(R.styleable.ShadowLayout_shadowMarginTop, SIZE_DEFAULT);
+            shadowMarginLeft =
+                a.getDimensionPixelSize(R.styleable.ShadowLayout_shadowMarginLeft, SIZE_DEFAULT);
+            shadowMarginRight =
+                a.getDimensionPixelSize(R.styleable.ShadowLayout_shadowMarginRight, SIZE_DEFAULT);
+            shadowMarginBottom =
+                a.getDimensionPixelSize(R.styleable.ShadowLayout_shadowMarginBottom, SIZE_DEFAULT);
         }
 
-        float cornerRadius = a.getDimensionPixelSize(R.styleable.ShadowLayout_cornerRadius, SIZE_UNSET);
+        float cornerRadius =
+            a.getDimensionPixelSize(R.styleable.ShadowLayout_cornerRadius, SIZE_UNSET);
         if (cornerRadius >= 0) {
             cornerRadiusTL = cornerRadius;
             cornerRadiusTR = cornerRadius;
             cornerRadiusBL = cornerRadius;
             cornerRadiusBR = cornerRadius;
         } else {
-            cornerRadiusTL = a.getDimensionPixelSize(R.styleable.ShadowLayout_cornerRadiusTL, SIZE_DEFAULT);
-            cornerRadiusTR = a.getDimensionPixelSize(R.styleable.ShadowLayout_cornerRadiusTR, SIZE_DEFAULT);
-            cornerRadiusBL = a.getDimensionPixelSize(R.styleable.ShadowLayout_cornerRadiusBL, SIZE_DEFAULT);
-            cornerRadiusBR = a.getDimensionPixelSize(R.styleable.ShadowLayout_cornerRadiusBR, SIZE_DEFAULT);
+            cornerRadiusTL =
+                a.getDimensionPixelSize(R.styleable.ShadowLayout_cornerRadiusTL, SIZE_DEFAULT);
+            cornerRadiusTR =
+                a.getDimensionPixelSize(R.styleable.ShadowLayout_cornerRadiusTR, SIZE_DEFAULT);
+            cornerRadiusBL =
+                a.getDimensionPixelSize(R.styleable.ShadowLayout_cornerRadiusBL, SIZE_DEFAULT);
+            cornerRadiusBR =
+                a.getDimensionPixelSize(R.styleable.ShadowLayout_cornerRadiusBR, SIZE_DEFAULT);
         }
         a.recycle();
         bgPaint.setColor(backgroundColor);
@@ -122,56 +132,61 @@ public class ShadowLayout extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int maxHeight = 0;
-        int maxWidth = 0;
-        int childState = 0;
 
-        ViewGroup.LayoutParams layoutParams = getLayoutParams();
-        setMeasuredDimension(getDefaultSize(0, widthMeasureSpec), getDefaultSize(0, heightMeasureSpec));
-        boolean shadowMeasureWidthMatchParent = layoutParams.width == ViewGroup.LayoutParams.MATCH_PARENT;
-        boolean shadowMeasureHeightMatchParent = layoutParams.height == ViewGroup.LayoutParams.MATCH_PARENT;
-        int widthSpec = widthMeasureSpec;
-        if (shadowMeasureWidthMatchParent) {
-            int childWidthSize = getMeasuredWidth() - shadowMarginRight - shadowMarginLeft;
-            widthSpec = MeasureSpec.makeMeasureSpec(childWidthSize, MeasureSpec.EXACTLY);
-        }
-        int heightSpec = heightMeasureSpec;
-        if (shadowMeasureHeightMatchParent) {
-            int childHeightSize = getMeasuredHeight() - shadowMarginTop - shadowMarginBottom;
-            heightSpec = MeasureSpec.makeMeasureSpec(childHeightSize, MeasureSpec.EXACTLY);
-        }
+        int childMaxWidth = 0;
+        int childMaxHeight = 0;
+
         View child = getChildAt(0);
         if (child.getVisibility() != View.GONE) {
-            measureChildWithMargins(child, widthSpec, 0, heightSpec, 0);
+            measureChildWithMargins(child, widthMeasureSpec, shadowMarginRight + shadowMarginLeft,
+                heightMeasureSpec, shadowMarginTop + shadowMarginBottom);
+
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
-            if (shadowMeasureWidthMatchParent) {
-                maxWidth = Math.max(maxWidth,
-                        child.getMeasuredWidth() + lp.leftMargin + lp.rightMargin);
-            } else {
-                maxWidth = Math.max(maxWidth, child.getMeasuredWidth() + shadowMarginLeft + shadowMarginRight + lp.leftMargin + lp.rightMargin);
-            }
-            if (shadowMeasureHeightMatchParent) {
-                maxHeight = Math.max(maxHeight, child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin);
-            } else {
-                maxHeight = Math.max(maxHeight, child.getMeasuredHeight() + shadowMarginTop + shadowMarginBottom + lp.topMargin + lp.bottomMargin);
-            }
-            childState = View.combineMeasuredStates(childState, child.getMeasuredState());
+
+            childMaxWidth =
+                Math.max(childMaxWidth, child.getMeasuredWidth() + lp.leftMargin + lp.rightMargin);
+            childMaxHeight = Math.max(childMaxHeight,
+                child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin);
         }
-        maxWidth += getPaddingLeft() + getPaddingRight();
-        maxHeight += getPaddingTop() + getPaddingBottom();
-        maxHeight = Math.max(maxHeight, getSuggestedMinimumHeight());
-        maxWidth = Math.max(maxWidth, getSuggestedMinimumWidth());
-        Drawable drawable = getForeground();
-        if (drawable != null) {
-            maxHeight = Math.max(maxHeight, drawable.getMinimumHeight());
-            maxWidth = Math.max(maxWidth, drawable.getMinimumWidth());
+
+        int contentWidth = childMaxWidth
+            + getPaddingLeft()
+            + getPaddingRight()
+            + shadowMarginRight
+            + shadowMarginLeft;
+
+        int contentHeight = childMaxHeight
+            + getPaddingTop()
+            + getPaddingBottom()
+            + shadowMarginTop
+            + shadowMarginBottom;
+
+        setMeasuredDimension(getMeasurement(widthMeasureSpec, contentWidth),
+            getMeasurement(heightMeasureSpec, contentHeight));
+    }
+
+    private static int getMeasurement(int measureSpec, int contentSize) {
+        int specMode = View.MeasureSpec.getMode(measureSpec);// 获取测量模式
+        int specSize = View.MeasureSpec.getSize(measureSpec);// 根据测量规格获取尺寸
+        int resultSize = 0;
+        switch (specMode) {
+            case View.MeasureSpec.UNSPECIFIED:
+                resultSize = contentSize;
+                break;
+            case View.MeasureSpec.AT_MOST:
+                resultSize = Math.min(contentSize, specSize);
+                break;
+            case View.MeasureSpec.EXACTLY:
+                resultSize = specSize;
+                break;
         }
-        setMeasuredDimension(View.resolveSizeAndState(maxWidth, shadowMeasureWidthMatchParent ? widthMeasureSpec : widthSpec, childState),
-                View.resolveSizeAndState(maxHeight, shadowMeasureHeightMatchParent ? heightMeasureSpec : heightSpec, childState << View.MEASURED_HEIGHT_STATE_SHIFT));
+
+        return resultSize;
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        
         layoutChildren(left, top, right, bottom, false/* no force left gravity */);
         if (changed) {
             foregroundDrawBoundsChanged = changed;
@@ -179,7 +194,8 @@ public class ShadowLayout extends ViewGroup {
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private void layoutChildren(int left, int top, int right, int bottom, boolean forceLeftGravity) {
+    private void layoutChildren(int left, int top, int right, int bottom,
+        boolean forceLeftGravity) {
         int count = getChildCount();
 
         int parentLeft = getPaddingLeftWithForeground();
@@ -195,7 +211,7 @@ public class ShadowLayout extends ViewGroup {
 
                 int width = child.getMeasuredWidth();
                 int height = child.getMeasuredHeight();
-
+                
                 int childLeft = 0;
                 int childTop;
 
@@ -210,8 +226,9 @@ public class ShadowLayout extends ViewGroup {
 
                 switch (absoluteGravity & Gravity.HORIZONTAL_GRAVITY_MASK) {
                     case Gravity.CENTER_HORIZONTAL:
-                        childLeft = parentLeft + (parentRight - parentLeft - width) / 2 +
-                                lp.leftMargin - lp.rightMargin + shadowMarginLeft - shadowMarginRight;
+                        childLeft =
+                            parentLeft + (parentRight - parentLeft - width) / 2 + lp.leftMargin
+                                - lp.rightMargin + shadowMarginLeft - shadowMarginRight;
                         break;
                     case Gravity.RIGHT:
                         if (!forceLeftGravity) {
@@ -230,8 +247,9 @@ public class ShadowLayout extends ViewGroup {
                         childTop = parentTop + lp.topMargin + shadowMarginTop;
                         break;
                     case Gravity.CENTER_VERTICAL:
-                        childTop = parentTop + (parentBottom - parentTop - height) / 2 +
-                                lp.topMargin - lp.bottomMargin + shadowMarginTop - shadowMarginBottom;
+                        childTop =
+                            parentTop + (parentBottom - parentTop - height) / 2 + lp.topMargin
+                                - lp.bottomMargin + shadowMarginTop - shadowMarginBottom;
                         break;
                     case Gravity.BOTTOM:
                         childTop = parentBottom - height - lp.bottomMargin - shadowMarginBottom;
@@ -251,11 +269,10 @@ public class ShadowLayout extends ViewGroup {
         if (canvas != null) {
             int w = getMeasuredWidth();
             int h = getMeasuredHeight();
-            Path path = ShapeUtils.roundedRect(shadowMarginLeft, shadowMarginTop, (w - shadowMarginRight), (h - shadowMarginBottom)
-                    , cornerRadiusTL
-                    , cornerRadiusTR
-                    , cornerRadiusBR
-                    , cornerRadiusBL);
+            Path path =
+                ShapeUtils.roundedRect(shadowMarginLeft, shadowMarginTop, (w - shadowMarginRight),
+                    (h - shadowMarginBottom), cornerRadiusTL, cornerRadiusTR, cornerRadiusBR,
+                    cornerRadiusBL);
             canvas.drawPath(path, bgPaint);
             canvas.clipPath(path);
         }
@@ -268,12 +285,10 @@ public class ShadowLayout extends ViewGroup {
             canvas.save();
             int w = getMeasuredWidth();
             int h = getMeasuredHeight();
-            Path path = ShapeUtils.roundedRect(shadowMarginLeft, shadowMarginTop, (w - shadowMarginRight)
-                    , (h - shadowMarginBottom)
-                    , cornerRadiusTL
-                    , cornerRadiusTR
-                    , cornerRadiusBR
-                    , cornerRadiusBL);
+            Path path =
+                ShapeUtils.roundedRect(shadowMarginLeft, shadowMarginTop, (w - shadowMarginRight),
+                    (h - shadowMarginBottom), cornerRadiusTL, cornerRadiusTR, cornerRadiusBR,
+                    cornerRadiusBL);
             canvas.clipPath(path);
             drawForeground(canvas);
             canvas.restore();
@@ -291,7 +306,8 @@ public class ShadowLayout extends ViewGroup {
 
     private float getShadowMarginMax() {
         float max = 0f;
-        List<Integer> margins = Arrays.asList(shadowMarginLeft, shadowMarginTop, shadowMarginRight, shadowMarginBottom);
+        List<Integer> margins =
+            Arrays.asList(shadowMarginLeft, shadowMarginTop, shadowMarginRight, shadowMarginBottom);
         for (Integer value : margins) {
             max = Math.max(max, value);
         }
@@ -307,15 +323,15 @@ public class ShadowLayout extends ViewGroup {
                 if (foregroundDrawInPadding) {
                     selfBounds.set(0, 0, w, h);
                 } else {
-                    selfBounds.set(getPaddingLeft(), getPaddingTop(), w - getPaddingRight(), h - getPaddingBottom());
+                    selfBounds.set(getPaddingLeft(), getPaddingTop(), w - getPaddingRight(),
+                        h - getPaddingBottom());
                 }
                 Gravity.apply(foregroundDrawGravity, foregroundDrawable.getIntrinsicWidth(),
-                        foregroundDrawable.getIntrinsicHeight(), selfBounds, overlayBounds);
+                    foregroundDrawable.getIntrinsicHeight(), selfBounds, overlayBounds);
                 foregroundDrawable.setBounds(overlayBounds);
             }
             foregroundDrawable.draw(canvas);
         }
-
     }
 
     @Override
@@ -404,7 +420,8 @@ public class ShadowLayout extends ViewGroup {
         if (foregroundDrawable != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if (foregroundDrawable instanceof RippleDrawable) {
-                    ((RippleDrawable) foregroundDrawable).setColor(ColorStateList.valueOf(foregroundColor));
+                    ((RippleDrawable) foregroundDrawable).setColor(
+                        ColorStateList.valueOf(foregroundColor));
                 }
             } else {
                 foregroundDrawable.setColorFilter(foregroundColor, PorterDuff.Mode.SRC_ATOP);
@@ -652,9 +669,9 @@ public class ShadowLayout extends ViewGroup {
     /**
      * Sets the shadow margin in pixels.
      *
-     * @param left   The left shadow margin in pixels.
-     * @param top    The top shadow margin in pixels.
-     * @param right  The right shadow margin in pixels.
+     * @param left The left shadow margin in pixels.
+     * @param top The top shadow margin in pixels.
+     * @param right The right shadow margin in pixels.
      * @param bottom The bottom shadow margin in pixels.
      * @attr ref R.styleable#ShadowLayout_shadowMargin
      */
@@ -826,7 +843,8 @@ public class ShadowLayout extends ViewGroup {
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);
             TypedArray a = c.obtainStyledAttributes(attrs, R.styleable.ShadowLayout_Layout);
-            gravity = a.getInt(R.styleable.ShadowLayout_Layout_android_layout_gravity, UNSPECIFIED_GRAVITY);
+            gravity = a.getInt(R.styleable.ShadowLayout_Layout_android_layout_gravity,
+                UNSPECIFIED_GRAVITY);
             a.recycle();
         }
 
@@ -837,8 +855,8 @@ public class ShadowLayout extends ViewGroup {
         /**
          * Creates a new set of layout parameters with the specified width, height and weight.
          *
-         * @param width   the width, either {@link #MATCH_PARENT}, {@link #WRAP_CONTENT} or a fixed size in pixels
-         * @param height  the height, either {@link #MATCH_PARENT}, {@link #WRAP_CONTENT} or a fixed size in pixels
+         * @param width the width, either {@link #MATCH_PARENT}, {@link #WRAP_CONTENT} or a fixed size in pixels
+         * @param height the height, either {@link #MATCH_PARENT}, {@link #WRAP_CONTENT} or a fixed size in pixels
          * @param gravity the gravity
          * @see android.view.Gravity
          */
@@ -865,7 +883,5 @@ public class ShadowLayout extends ViewGroup {
             super(source);
             this.gravity = source.gravity;
         }
-
     }
-
 }

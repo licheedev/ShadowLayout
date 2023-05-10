@@ -10,7 +10,9 @@ Screenshot
 |![](/screenshot/shadow_color.gif) |![](/screenshot/shadow_margin_hide.gif)|![](/screenshot/shadow_demo.gif)   |
 
 ## Download ##
+
 ### Gradle ###
+
 ```gradle
 // root build.gradle
 allprojects {
@@ -22,7 +24,7 @@ allprojects {
 
 // module build.gradle
 dependencies {
-    implementation 'com.github.licheedev:ShadowLayout:1.0.2.1'
+    implementation 'com.github.licheedev:ShadowLayout:1.0.2.2'
 }
 ```
 
@@ -33,22 +35,15 @@ Download [APK-Demo](https://github.com/HenleyLee/ShadowLayout/raw/master/app/app
 Usages
 
 ```xml
-<com.henley.shadowlayout.ShadowLayout
-    android:id="@+id/shadow_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="12dp"
-    android:elevation="10dp"
-    android:foreground="?attr/selectableItemBackground"
-    android:padding="10dp"
-    app:cornerRadius="10dp"
-    app:shadowMargin="10dp"
-    app:shadowRadius="10dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Google Developer Days Europe 2017 took place in Krakow, Poland. In this playlist, you can find all the recorded sessions from the event, across all tracks (Develop on Mobile, Mobile Web, Beyond Mobile, and Android)."/>
+<com.henley.shadowlayout.ShadowLayout android:id="@+id/shadow_view"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_margin="12dp" android:elevation="10dp"
+    android:foreground="?attr/selectableItemBackground" android:padding="10dp"
+    app:cornerRadius="10dp" app:shadowMargin="10dp" app:shadowRadius="10dp">
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="Google Developer Days Europe 2017 took place in Krakow, Poland. In this playlist, you can find all the recorded sessions from the event, across all tracks (Develop on Mobile, Mobile Web, Beyond Mobile, and Android)." />
 </com.henley.shadowlayout.ShadowLayout>
 ```
 
